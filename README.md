@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🍲 Receitas da Família
 
-## Getting Started
+Livro de receitas da família como aplicação web — Fase 1.
 
-First, run the development server:
+## O que já funciona nesta fase
+
+- Cadastrar uma receita (título, categoria, porções, quem contribuiu, ingredientes, modo de preparo, notas)
+- Ver a lista de todas as receitas
+- Ver o detalhe de uma receita
+- Editar uma receita
+- Excluir uma receita
+
+Ainda **não** tem (fica pra próximas fases, como combinamos): contas de usuário / convite pra família, "modo cozinha" pro celular, fotos, busca e filtro.
+
+## Como rodar na sua máquina
+
+Pré-requisitos: [Node.js](https://nodejs.org) versão 22 ou mais recente (o projeto usa o módulo `node:sqlite`, que só existe a partir do Node 22).
 
 ```bash
+# 1. Instalar as dependências
+npm install
+
+# 2. Rodar o servidor de desenvolvimento
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Depois é só abrir [http://localhost:3000](http://localhost:3000) no navegador.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Os dados ficam salvos em `data/receitas.db` — um arquivo SQLite. Ele é criado automaticamente na primeira vez que o servidor roda, e fica de fora do git (veja o `.gitignore`), então cada pessoa que rodar o projeto localmente tem seu próprio banco.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Como o projeto é organizado
 
-## Learn More
+- `lib/db.ts` — acesso ao banco de dados (SQLite nativo do Node, sem ORM). Cada função aqui é uma operação: listar, buscar uma, criar, atualizar, excluir.
+- `lib/actions.ts` — as "Server Actions": funções que os formulários chamam diretamente para salvar dados, sem precisar de uma API separada.
+- `components/recipe-form.tsx` — o formulário de receita, reaproveitado tanto para criar quanto para editar.
+- `app/` — as páginas, seguindo o roteamento por pastas do Next.js (App Router):
+  - `app/page.tsx` — lista de receitas (home)
+  - `app/receitas/nova/page.tsx` — formulário de nova receita
+  - `app/receitas/[id]/page.tsx` — detalhe de uma receita
+  - `app/receitas/[id]/editar/page.tsx` — formulário de edição
 
-To learn more about Next.js, take a look at the following resources:
+## Tecnologias
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Next.js 16 (App Router + Server Actions), React 19, TypeScript, Tailwind CSS v4, e `node:sqlite` (nativo do Node.js) como banco de dados.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> Nota técnica: a ideia original era usar Prisma como camada de banco de dados, mas o ambiente onde este projeto foi montado bloqueia o download dos binários que o Prisma precisa. Por isso optamos por `node:sqlite` direto — o que, para aprender, tem a vantagem de deixar o SQL bem visível em vez de escondido atrás de um ORM.
 
-## Deploy on Vercel
+## Próximas fases (combinadas)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. ~~CRUD básico de receitas~~ ✅ (esta fase)
+2. Contas de usuário e convite para a família
+3. "Modo cozinha" otimizado para celular + instalação como PWA
+4. Fotos, busca/filtro, histórico de edições
