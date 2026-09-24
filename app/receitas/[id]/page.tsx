@@ -1,7 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getRecipe } from "@/lib/db";
-import { deleteRecipeAction } from "@/lib/actions";
+import {
+  deleteRecipeAction,
+  updateRecipePhotoAction,
+  removeRecipePhotoAction,
+} from "@/lib/actions";
+import { getCurrentUser } from "@/lib/auth";
+import { urlFotoCheia } from "@/lib/photo-urls";
+
+const fileInputClasses =
+  "text-xs text-stone-500 file:mr-2 file:rounded file:border-0 file:bg-stone-100 file:px-2 file:py-1 file:text-xs file:font-medium file:text-stone-700 hover:file:bg-stone-200";
 
 export const dynamic = "force-dynamic";
 
@@ -21,9 +30,70 @@ export default async function ReceitaDetalhePage(
     notFound();
   }
 
+  const user = await getCurrentUser();
+  const isAuthor = user?.id === recipe.authorId;
+
   return (
     <div className="rounded-lg border border-orange-200 bg-white p-6 shadow-sm">
-      <div className="mb-4 flex items-start justify-between gap-4">
+      {recipe.photoPath ? (
+        <div className="mb-4">
+          <img
+            src={urlFotoCheia(recipe.photoPath)}
+            alt={recipe.title}
+            className="max-h-80 w-full rounded-md object-cover"
+          />
+          <div className="mt-2 flex flex-wrap items-center gap-4 text-xs">
+            <form
+              action={updateRecipePhotoAction.bind(null, recipe.id)}
+              className="flex items-center gap-2"
+            >
+              <input
+                type="file"
+                name="photo"
+                accept="image/*"
+                required
+                className={fileInputClasses}
+              />
+              <button
+                type="submit"
+                className="font-medium text-stone-600 underline hover:no-underline"
+              >
+                Trocar
+              </button>
+            </form>
+            <form action={removeRecipePhotoAction.bind(null, recipe.id)}>
+              <button
+                type="submit"
+                className="font-medium text-red-600 underline hover:no-underline"
+              >
+                Remover foto
+              </button>
+            </form>
+          </div>
+        </div>
+      ) : (
+        <form
+          action={updateRecipePhotoAction.bind(null, recipe.id)}
+          className="mb-4 flex flex-wrap items-center gap-3 rounded-md border border-dashed border-stone-300 px-3 py-2 text-sm text-stone-500"
+        >
+          <span>Sem foto ainda.</span>
+          <input
+            type="file"
+            name="photo"
+            accept="image/*"
+            required
+            className={fileInputClasses}
+          />
+          <button
+            type="submit"
+            className="rounded-md bg-amber-700 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-800"
+          >
+            Adicionar foto
+          </button>
+        </form>
+      )}
+
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
         <div>
           <span className="mb-1 inline-block rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
             {recipe.category}
@@ -43,14 +113,16 @@ export default async function ReceitaDetalhePage(
           >
             Editar
           </Link>
-          <form action={deleteRecipeAction.bind(null, recipe.id)}>
-            <button
-              type="submit"
-              className="rounded-md border border-red-300 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
-            >
-              Excluir
-            </button>
-          </form>
+          {isAuthor && (
+            <form action={deleteRecipeAction.bind(null, recipe.id)}>
+              <button
+                type="submit"
+                className="rounded-md border border-red-300 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
+              >
+                Excluir
+              </button>
+            </form>
+          )}
         </div>
       </div>
 

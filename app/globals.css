@@ -3,18 +3,19 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* O design deste app é sempre "claro" (fundo laranja/creme, texto
+     escuro) — ele não tem uma versão escura. Sem esta linha, alguns
+     navegadores (em especial no Windows com tema escuro do sistema)
+     tentam "escurecer" sozinhos só os campos de formulário (input,
+     select, textarea), deixando o texto digitado quase invisível
+     sobre o fundo claro. Isso avisa: não faça isso, este site é
+     sempre claro. */
+  color-scheme: light;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {

@@ -40,6 +40,17 @@ yarn-error.log*
 /data/*.db
 /data/*.db-journal
 
+# fotos das receitas, enviadas pelo app (ficam só na sua máquina)
+/data/uploads/
+
+# cache interno do OCR (Tesseract.js) — só acelera execuções futuras,
+# pode ser apagado a qualquer momento sem perda de dados
+/data/ocr-cache/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# arquivos locais que não vão para o GitHub
+*.zip
+/public/teste-localstorage.html

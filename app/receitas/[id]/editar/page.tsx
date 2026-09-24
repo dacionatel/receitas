@@ -30,6 +30,7 @@ export default async function EditarReceitaPage(
         action={updateRecipeAction.bind(null, recipe.id)}
         defaultValues={recipe}
         submitLabel="Salvar alterações"
+        draftKey={`editar-${recipe.id}`}
       />
     </div>
   );
